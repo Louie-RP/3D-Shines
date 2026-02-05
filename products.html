@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>Products — 3D Shines</title>
+    <meta
+      name="description"
+      content="Browse 3D Shines products — new releases, limited colors, and seasonal minis."
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=Space+Grotesk:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <div class="announce" role="status" aria-live="polite">
+      <div class="container announce__inner">
+        <p>NOW SHIPPING WORLDWIDE — Fulfillment time: 3–7 business days</p>
+        <a class="announce__link" href="index.html#subscribe">Get updates</a>
+      </div>
+    </div>
+
+    <header class="header" data-header>
+      <div class="container header__inner">
+        <a class="brand" href="index.html" aria-label="3D Shines home">
+          <span class="brand__mark" aria-hidden="true"></span>
+          <span class="brand__name">3D Shines</span>
+        </a>
+
+        <div class="header__actions">
+          <nav class="nav nav--header" aria-label="Header">
+            <a href="index.html">Home</a>
+            <a href="products.html" aria-current="page">Products</a>
+          </nav>
+
+          <a class="nav__cart" href="#cart" aria-label="Cart">
+            Cart <span class="nav__count" data-cart-count>0</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero hero--page">
+        <div class="container hero__inner">
+          <div class="hero__copy">
+            <p class="eyebrow">Products</p>
+            <h1 class="hero__title">Fresh from the printer</h1>
+            <p class="hero__sub">
+              New releases, limited colors, and seasonal minis.
+            </p>
+            <div class="hero__actions">
+              <a class="button" href="index.html#bestsellers">Best sellers</a>
+              <a class="button button--ghost" href="faq.html">Shipping & FAQ</a>
+            </div>
+          </div>
+
+          <div class="hero__art" aria-hidden="true">
+            <div class="shine-card" style="aspect-ratio: 1/0.9">
+              <div class="shine-card__grid"></div>
+              <div class="shine-card__glow"></div>
+              <div class="shine-card__content">
+                <p class="shine-card__label">Note</p>
+                <p class="shine-card__name">Small-batch drops</p>
+                <p class="shine-card__price">Restocks vary</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="grid grid--dense" data-product-grid-all></div>
+        </div>
+      </section>
+
+      <footer class="footer" id="subscribe">
+        <div class="container footer__inner">
+          <nav class="footer__links" aria-label="Footer">
+            <a href="products.html" aria-current="page">Products</a>
+            <a href="about.html">About</a>
+            <a href="faq.html">FAQ</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="contact.html">Contact</a>
+          </nav>
+
+          <div class="footer__right">
+            <form class="subscribe" data-subscribe-form>
+              <label class="sr-only" for="sub-email">Email</label>
+              <input
+                id="sub-email"
+                name="email"
+                type="email"
+                placeholder="Email"
+                autocomplete="email"
+                required
+              />
+              <button class="button button--small" type="submit">Join</button>
+            </form>
+            <p class="muted small footer__copy">© <span data-year></span> 3D Shines</p>
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <dialog class="modal" data-modal>
+      <div class="modal__inner">
+        <form method="dialog">
+          <button class="icon-button modal__close" aria-label="Close">
+            <span class="icon-button__x" aria-hidden="true"></span>
+          </button>
+        </form>
+
+        <div class="modal__content">
+          <div class="modal__media" aria-hidden="true">
+            <div class="thumb" data-modal-thumb></div>
+          </div>
+          <div class="modal__copy">
+            <p class="eyebrow" data-modal-tag>Best seller</p>
+            <h3 class="modal__title" data-modal-title>Product</h3>
+            <p class="modal__price" data-modal-price>$12.00</p>
+            <p class="muted" data-modal-desc>
+              A satisfying little print with a durable finish.
+            </p>
+
+            <div class="modal__row">
+              <label class="select">
+                <span class="select__label">Finish</span>
+                <select data-modal-finish>
+                  <option>Matte black</option>
+                  <option>Carbon shimmer</option>
+                  <option>Midnight metallic</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="modal__row modal__actions">
+              <button class="button" type="button" data-add-to-cart>
+                Add to cart
+              </button>
+              <button class="button button--ghost" type="button" data-copy-link>
+                Copy link
+              </button>
+            </div>
+
+            <p class="small muted">
+              Demo UI only — cart and checkout are placeholders.
+            </p>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <script src="script.js"></script>
+  </body>
+</html>

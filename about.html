@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>About — 3D Shines</title>
+    <meta name="description" content="About 3D Shines." />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=Space+Grotesk:wght@300..700&display=swap"
+        rel="stylesheet" />
+
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <div class="announce" role="status" aria-live="polite">
+        <div class="container announce__inner">
+            <p>NOW SHIPPING WORLDWIDE — Fulfillment time: 3–7 business days</p>
+            <a class="announce__link" href="index.html#subscribe">Get updates</a>
+        </div>
+    </div>
+
+    <header class="header" data-header>
+        <div class="container header__inner">
+            <a class="brand" href="index.html" aria-label="3D Shines home">
+                <span class="brand__mark" aria-hidden="true"></span>
+                <span class="brand__name">3D Shines</span>
+            </a>
+
+            <div class="header__actions">
+                <nav class="nav nav--header" aria-label="Header">
+                    <a href="index.html">Home</a>
+                    <a href="products.html">Products</a>
+                </nav>
+
+                <a class="nav__cart" href="#cart" aria-label="Cart">
+                    Cart <span class="nav__count" data-cart-count>0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main id="main">
+        <section class="hero hero--page">
+            <div class="container hero__inner">
+                <div class="hero__copy">
+                    <p class="eyebrow">About</p>
+                    <h1 class="hero__title">3D Shines</h1>
+                    <p class="hero__sub">
+                        A small 3D-print shop focused on playful, functional designs — made
+                        to feel good in your hands and look great on your shelf.
+                    </p>
+                    <div class="hero__actions">
+                        <a class="button" href="index.html#bestsellers">Shop best sellers</a>
+                        <a class="button button--ghost" href="contact.html">Contact</a>
+                    </div>
+                </div>
+
+                <div class="hero__art" aria-hidden="true">
+                    <div class="about-card">
+                        <div class="about-card__inner">
+                            <p class="about-card__kicker">Material notes</p>
+                            <p class="about-card__title">PLA / PETG</p>
+                            <p class="about-card__text">
+                                Durable everyday plastics. Colors can vary slightly by batch —
+                                that’s part of the charm.
+                            </p>
+                            <div class="about-card__chips">
+                                <span class="chip">Lightweight</span>
+                                <span class="chip">Giftable</span>
+                                <span class="chip">Custom colors</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container split">
+                <div>
+                    <h2 class="section__title">What we make</h2>
+                    <p class="muted">
+                        Keychains, desk accessories, mini organizers, and satisfying tactile
+                        pieces — designed to be durable, simple, and clean.
+                    </p>
+
+                    <div class="feature-list">
+                        <div class="feature">
+                            <h3 class="feature__title">Bright finishes</h3>
+                            <p class="feature__text">
+                                Metallics, mattes, and color-shift filaments that catch the
+                                light.
+                            </p>
+                        </div>
+                        <div class="feature">
+                            <h3 class="feature__title">Made with care</h3>
+                            <p class="feature__text">
+                                Printed, cleaned, and packed with consistent quality checks.
+                            </p>
+                        </div>
+                        <div class="feature">
+                            <h3 class="feature__title">Small-batch drops</h3>
+                            <p class="feature__text">
+                                Limited runs so you can snag something unique.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 class="section__title">Custom requests</h2>
+                    <p class="muted">
+                        Want a different color, finish, or a small tweak? Reach out — we’ll
+                        tell you what’s possible and what the timeline looks like.
+                    </p>
+                    <div class="notice" role="note">
+                        <h3 class="notice__title">Tip</h3>
+                        <p class="notice__text">
+                            Include the item name, color idea, and your deadline.
+                        </p>
+                        <a class="notice__link" href="contact.html">Message us</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer" id="subscribe">
+            <div class="container footer__inner">
+                <nav class="footer__links" aria-label="Footer">
+                    <a href="products.html">Products</a>
+                    <a href="about.html" aria-current="page">About</a>
+                    <a href="faq.html">FAQ</a>
+                    <a href="privacy.html">Privacy</a>
+                    <a href="contact.html">Contact</a>
+                </nav>
+
+                <div class="footer__right">
+                    <form class="subscribe" data-subscribe-form>
+                        <label class="sr-only" for="sub-email">Email</label>
+                        <input id="sub-email" name="email" type="email" placeholder="Email" autocomplete="email"
+                            required />
+                        <button class="button button--small" type="submit">Join</button>
+                    </form>
+                    <p class="muted small footer__copy">© <span data-year></span> 3D Shines</p>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
