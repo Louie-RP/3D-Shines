@@ -865,7 +865,7 @@ select:focus {
 .footer {
   padding: 44px 0 28px;
   border-top: 1px solid var(--line-2);
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(7, 7, 7, 0.72);
 }
 
 .footer__inner {
