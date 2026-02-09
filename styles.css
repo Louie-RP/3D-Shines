@@ -550,6 +550,42 @@ a:hover {
   gap: 14px;
 }
 
+.grid--carousel {
+  grid-template-columns: none;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(220px, 280px);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 8px;
+  padding: 4px 0 12px;
+  gap: 14px;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+.grid--carousel > * {
+  scroll-snap-align: start;
+}
+
+.grid--carousel::-webkit-scrollbar {
+  height: 10px;
+}
+
+.grid--carousel::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+}
+
+.grid--carousel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+}
+
+.grid--carousel::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
 .grid--dense {
   grid-template-columns: repeat(6, 1fr);
 }
@@ -1160,6 +1196,10 @@ select:focus {
 
   .grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid--carousel {
+    grid-auto-columns: minmax(200px, 78vw);
   }
 
   .grid--dense {
