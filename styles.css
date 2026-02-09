@@ -39,17 +39,7 @@ body {
   margin: 0;
   font-family: var(--font-ui);
   color: var(--text);
-  background: radial-gradient(
-      1200px 900px at 80% -10%,
-      rgba(255, 255, 255, 0.06),
-      transparent 55%
-    ),
-    radial-gradient(
-      800px 700px at 10% 0%,
-      rgba(255, 255, 255, 0.05),
-      transparent 60%
-    ),
-    linear-gradient(180deg, var(--bg), var(--bg-2) 65%, var(--bg));
+  background: var(--bg);
 }
 
 a {
