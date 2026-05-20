@@ -1,0 +1,285 @@
+/* Dark mode overrides loaded dynamically when Dark theme is selected. */
+:root,
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #070707;
+  --bg-2: #0e0e12;
+  --bg-3: #15151e;
+  --surface: #171724;
+  --surface-2: #1f1f31;
+  --text: #f3f2ff;
+  --muted: #c3bfd9;
+  --line: rgba(255, 255, 255, 0.14);
+  --line-2: rgba(255, 255, 255, 0.2);
+  --accent: #a855f7;
+  --accent-ink: #fefbff;
+  --accent-2: #833ab4;
+  --accent-soft: rgba(168, 85, 247, 0.24);
+  --shadow: 0 26px 56px rgba(0, 0, 0, 0.56);
+  --shadow-soft: 0 14px 30px rgba(0, 0, 0, 0.34);
+}
+
+body {
+  color: var(--text);
+  background: var(--bg);
+}
+
+.hero::before {
+  background:
+    radial-gradient(1000px 420px at 88% -10%, rgba(168, 85, 247, 0.24), transparent 62%),
+    radial-gradient(900px 520px at 8% 10%, rgba(99, 32, 143, 0.34), transparent 58%);
+}
+
+a:hover {
+  text-decoration-color: rgba(255, 255, 255, 0.36);
+}
+
+.skip-link {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--text);
+}
+
+.announce {
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.header {
+  background: linear-gradient(
+    135deg,
+    #63208f,
+    #833ab4 45%,
+    #a855f7
+  );
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header::before {
+  background:
+    radial-gradient(900px 260px at 18% 0%, rgba(255, 255, 255, 0.3), transparent 60%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03) 48%, rgba(0, 0, 0, 0.2));
+}
+
+.brand__mark {
+  background: linear-gradient(135deg, #ffffff, #8f8f9d);
+  box-shadow:
+    0 0 0 4px rgba(255, 255, 255, 0.1),
+    0 12px 26px rgba(255, 255, 255, 0.08);
+}
+
+.nav {
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.nav--header a:hover,
+.nav--header a[aria-current="page"] {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav__cart {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+}
+
+.nav__count {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.icon-button {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+}
+
+.mobile {
+  border-top-color: rgba(255, 255, 255, 0.1);
+  background: rgba(10, 10, 17, 0.94);
+}
+
+.mobile__links a {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.eyebrow {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.pill {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.shine-card {
+  border-color: rgba(255, 255, 255, 0.16);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03)),
+    radial-gradient(620px 420px at 22% 18%, rgba(255, 255, 255, 0.14), transparent 58%),
+    radial-gradient(520px 380px at 80% 76%, rgba(168, 85, 247, 0.22), transparent 62%),
+    #151522;
+}
+
+.shine-card__grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+}
+
+.shine-card__content {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(10, 10, 14, 0.66);
+}
+
+.shine-card__label {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.shine-card__price {
+  color: var(--muted);
+}
+
+.notice,
+.empty-state,
+.feature,
+.card,
+.cart-item,
+.cart-summary,
+.testimonial,
+.accordion__item,
+.form,
+.status-page__card,
+.about-card,
+.modal {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.thumb {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+  background:
+    radial-gradient(500px 240px at 32% 20%, rgba(255, 255, 255, 0.16), transparent 56%),
+    radial-gradient(440px 220px at 76% 88%, rgba(168, 85, 247, 0.24), transparent 62%),
+    linear-gradient(150deg, #1a1a27, #141421 64%, #121120 100%);
+}
+
+.thumb::after {
+  background-image: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1), transparent 45%);
+}
+
+.tag {
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.tag::before {
+  background: rgba(255, 255, 255, 0.34);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08);
+}
+
+.price,
+.form__hint,
+.feature__text,
+.testimonial__text,
+.testimonial__name,
+.notice__text,
+.muted,
+.accordion__item p,
+.about-card__text,
+.cart-item__meta,
+.modal__price,
+.small,
+.notice__title,
+.about-card__kicker,
+.feature__title,
+.select__label,
+.footer__head {
+  color: var(--muted);
+}
+
+.button {
+  border-color: rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text);
+  box-shadow: none;
+}
+
+.button:hover {
+  filter: none;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.button--ghost,
+.notice__link,
+.footer__links a {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.16);
+  color: var(--text);
+}
+
+.cart-item__img,
+.modal__media .thumb {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.cart-item__img--fallback {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.62);
+}
+
+input,
+textarea,
+select,
+.footer .subscribe input {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.2);
+}
+
+.footer {
+  border-top-color: rgba(255, 255, 255, 0.12);
+  background: linear-gradient(
+    135deg,
+    #63208f,
+    #833ab4 45%,
+    #a855f7
+  );
+}
+
+.footer__links a[aria-current="page"],
+.footer__links a:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.theme-switcher {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(14, 14, 20, 0.9);
+}
+
+.theme-switcher__toggle {
+  color: var(--text);
+}
+
+.theme-switcher__toggle:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.modal::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+@media (max-width: 720px) {
+  .theme-switcher {
+    background: rgba(14, 14, 20, 0.94);
+  }
+}

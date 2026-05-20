@@ -434,7 +434,18 @@ async function persistCompletedCheckout(session, eventId, env) {
 	const sessionId = String(session.id || "");
 	if (!sessionId) return;
 
-	const shippingAddress = session?.shipping_details?.address || null;
+	const collectedShipping = session?.collected_information?.shipping_details || null;
+	const shippingAddress =
+		session?.shipping_details?.address ||
+		collectedShipping?.address ||
+		session?.customer_details?.address ||
+		null;
+	const shippingName =
+		session?.shipping_details?.name ||
+		collectedShipping?.name ||
+		session?.customer_details?.name ||
+		session?.customer_details?.individual_name ||
+		null;
 
 	await env.DB.prepare(
 		`
@@ -470,7 +481,7 @@ async function persistCompletedCheckout(session, eventId, env) {
 			session?.customer_details?.email || session?.customer_email || null,
 			Number.isInteger(session.amount_total) ? session.amount_total : null,
 			session.currency || null,
-			session?.shipping_details?.name || null,
+			shippingName,
 			shippingAddress ? JSON.stringify(shippingAddress) : null,
 			"paid",
 			eventId || null

@@ -5,6 +5,10 @@ const CART_KEY = "cart";
 const MAX_ITEMS_PER_CHECKOUT = 20;
 const MAX_QTY_PER_ITEM = 10;
 const DEFAULT_STOREFRONT_API_BASE = "https://3dshines.lreyperez18.workers.dev";
+const THEME_KEY = "theme-preference";
+const THEME_DEFAULT = "luxe";
+const THEME_DARK = "dark";
+const THEME_LINK_ID = "theme-dark-overrides";
 
 const state = {
   productsByPriceId: new Map(),
@@ -531,8 +535,112 @@ function clearCartOnSuccessPage() {
   clearCart();
 }
 
+function normalizeTheme(value) {
+  if (value === THEME_DARK || value === "night") {
+    return THEME_DARK;
+  }
+  return THEME_DEFAULT;
+}
+
+function getThemeFromQuery() {
+  const value = new URLSearchParams(window.location.search).get("theme");
+  return value ? normalizeTheme(value) : null;
+}
+
+function getThemePreference() {
+  const fromQuery = getThemeFromQuery();
+  if (fromQuery) return fromQuery;
+
+  try {
+    return normalizeTheme(localStorage.getItem(THEME_KEY) || THEME_DEFAULT);
+  } catch {
+    return THEME_DEFAULT;
+  }
+}
+
+function getThemeOverrideLink() {
+  return document.getElementById(THEME_LINK_ID);
+}
+
+function setThemePreference(theme) {
+  const normalized = normalizeTheme(theme);
+
+  document.documentElement.setAttribute("data-theme", normalized);
+  document.documentElement.style.colorScheme =
+    normalized === THEME_DARK ? "dark" : "light";
+
+  const current = getThemeOverrideLink();
+  if (normalized === THEME_DARK) {
+    if (!current) {
+      const link = document.createElement("link");
+      link.id = THEME_LINK_ID;
+      link.rel = "stylesheet";
+      link.href = "styles-dark.css";
+      document.head.append(link);
+    }
+  } else if (current) {
+    current.remove();
+  }
+
+  try {
+    localStorage.setItem(THEME_KEY, normalized);
+  } catch {
+    // Ignore storage errors in restricted contexts.
+  }
+
+  const toggle = $("[data-theme-toggle]");
+  if (toggle instanceof HTMLButtonElement) {
+    const nextTheme = normalized === THEME_DARK ? THEME_DEFAULT : THEME_DARK;
+    const nextLabel = nextTheme === THEME_DARK ? "dark" : "light";
+
+    toggle.dataset.nextTheme = nextTheme;
+    toggle.setAttribute("aria-label", `Switch to ${nextLabel} mode`);
+
+    const moonIcon = $("[data-icon='moon']", toggle);
+    const sunIcon = $("[data-icon='sun']", toggle);
+    if (moonIcon) moonIcon.hidden = nextTheme !== THEME_DARK;
+    if (sunIcon) sunIcon.hidden = nextTheme !== THEME_DEFAULT;
+  }
+}
+
+function wireThemeSelector() {
+  const host = document.createElement("aside");
+  host.className = "theme-switcher";
+  host.setAttribute("aria-label", "Theme selector");
+  host.innerHTML = `
+    <button class="theme-switcher__toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" data-icon="moon">
+        <path d="M21 14.2A9 9 0 1 1 9.8 3 7 7 0 1 0 21 14.2z" fill="currentColor"></path>
+      </svg>
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" data-icon="sun" hidden>
+        <circle cx="12" cy="12" r="4" fill="currentColor"></circle>
+        <path d="M12 2v3m0 14v3M2 12h3m14 0h3M4.9 4.9l2.1 2.1m10 10 2.1 2.1M19.1 4.9 17 7m-10 10-2.1 2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"></path>
+      </svg>
+      <span class="sr-only">Toggle theme</span>
+    </button>
+  `;
+
+  document.body.append(host);
+
+  host.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+
+    const button = target.closest("[data-theme-toggle]");
+    if (!(button instanceof HTMLButtonElement)) return;
+
+    setThemePreference(button.dataset.nextTheme || THEME_DARK);
+  });
+}
+
+function initThemeSelector() {
+  wireThemeSelector();
+  setThemePreference(getThemePreference());
+}
+
 async function init() {
   clearCartOnSuccessPage();
+  initThemeSelector();
   normalizeCartLinks();
   wireAddToCart();
   wireCartPage();
