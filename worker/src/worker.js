@@ -290,6 +290,14 @@ function getSiteOrigin(request, env) {
 	return new URL(request.url).origin;
 }
 
+function getFrontendBaseUrl(request, env) {
+	if (env.FRONTEND_BASE_URL) {
+		return String(env.FRONTEND_BASE_URL).trim().replace(/\/+$/, "");
+	}
+
+	return getSiteOrigin(request, env);
+}
+
 async function handleCreateCheckoutSession(request, env) {
 	let payload;
 
@@ -312,11 +320,14 @@ async function handleCreateCheckoutSession(request, env) {
 		return jsonResponse({ error: "Invalid or inactive priceId" }, 400);
 	}
 
-	const siteOrigin = getSiteOrigin(request, env);
+	const frontendBaseUrl = getFrontendBaseUrl(request, env);
 	const body = new URLSearchParams();
 	body.set("mode", "payment");
-	body.set("success_url", `${siteOrigin}/success.html?session_id={CHECKOUT_SESSION_ID}`);
-	body.set("cancel_url", `${siteOrigin}/cart.html`);
+	body.set(
+		"success_url",
+		`${frontendBaseUrl}/success.html?session_id={CHECKOUT_SESSION_ID}`
+	);
+	body.set("cancel_url", `${frontendBaseUrl}/cart.html`);
 	body.set("shipping_address_collection[allowed_countries][0]", "US");
 
 	normalizedItems.forEach((item, index) => {
