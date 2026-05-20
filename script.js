@@ -24,6 +24,7 @@ function getApiBase() {
   if (
     window.location.hostname.endsWith("github.io") ||
     window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1" ||
     window.location.protocol === "file:"
   ) {
     return DEFAULT_STOREFRONT_API_BASE;
