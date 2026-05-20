@@ -4,6 +4,7 @@ const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selec
 const CART_KEY = "cart";
 const MAX_ITEMS_PER_CHECKOUT = 20;
 const MAX_QTY_PER_ITEM = 10;
+const DEFAULT_STOREFRONT_API_BASE = "https://3dshines.lreyperez18.workers.dev";
 
 const state = {
   productsByPriceId: new Map(),
@@ -14,6 +15,20 @@ function getApiBase() {
   if (typeof override === "string" && override.trim()) {
     return override.replace(/\/+$/, "");
   }
+
+  const meta = document.querySelector('meta[name="storefront-api-base"]');
+  if (meta && typeof meta.content === "string" && meta.content.trim()) {
+    return meta.content.replace(/\/+$/, "");
+  }
+
+  if (
+    window.location.hostname.endsWith("github.io") ||
+    window.location.hostname === "localhost" ||
+    window.location.protocol === "file:"
+  ) {
+    return DEFAULT_STOREFRONT_API_BASE;
+  }
+
   return "";
 }
 
