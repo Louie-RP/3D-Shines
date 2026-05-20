@@ -1,0 +1,4 @@
+[[d1_databases]]
+binding = "DB"
+database_name = "3dshines-orders"
+database_id = "<your-d1-database-id>"
