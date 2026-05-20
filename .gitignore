@@ -1,0 +1,8 @@
+# Cloudflare Worker local secrets and runtime artifacts
+worker/.dev.vars
+worker/.wrangler/
+worker/node_modules/
+
+# OS noise
+.DS_Store
+Thumbs.db
