@@ -92,7 +92,7 @@ function addToCart(product) {
       cart.items[idx].quantity + 1
     );
   } else {
-    if (cart.items.length >= MAX_ITEMS_PER_CHECKOUT) return;
+    if (cart.items.length >= MAX_ITEMS_PER_CHECKOUT) return false;
     cart.items.push({
       priceId: product.priceId,
       productId: product.productId,
@@ -106,6 +106,7 @@ function addToCart(product) {
 
   saveCart(cart);
   renderCartCount();
+  return true;
 }
 
 function removeFromCart(priceId) {
@@ -169,6 +170,15 @@ function renderProductError(message) {
   if (allGrid) allGrid.innerHTML = error;
 }
 
+function renderProductLoading() {
+  const lovedGrid = $("[data-product-grid]");
+  const allGrid = $("[data-product-grid-all]");
+  const loading = `<p class="empty-state">Loading products...</p>`;
+
+  if (lovedGrid) lovedGrid.innerHTML = loading;
+  if (allGrid) allGrid.innerHTML = loading;
+}
+
 function renderProducts(products) {
   const lovedGrid = $("[data-product-grid]");
   const allGrid = $("[data-product-grid-all]");
@@ -213,6 +223,7 @@ async function initProducts() {
   if (!hasGrid) return;
 
   try {
+    renderProductLoading();
     const products = await fetchProducts();
     state.productsByPriceId.clear();
     products.forEach((product) => {
@@ -280,8 +291,10 @@ function renderCartSummary(cart) {
 
   const subtotalEl = $("[data-cart-subtotal]");
   const totalEl = $("[data-cart-total]");
+  const countEl = $("[data-cart-item-count]");
   if (subtotalEl) subtotalEl.textContent = subtotal;
   if (totalEl) totalEl.textContent = subtotal;
+  if (countEl) countEl.textContent = String(getCartCount(cart));
 
   const isEmpty = cart.items.length === 0;
   const emptyEl = $("[data-cart-empty]");
@@ -416,8 +429,8 @@ function wireAddToCart() {
     const product = state.productsByPriceId.get(priceId);
     if (!product) return;
 
-    addToCart(product);
-    button.textContent = "Added";
+    const added = addToCart(product);
+    button.textContent = added ? "Added" : "Cart full";
     window.setTimeout(() => {
       button.textContent = "Add to cart";
     }, 700);
@@ -490,7 +503,20 @@ function normalizeCartLinks() {
   });
 }
 
+function clearCartOnSuccessPage() {
+  const path = window.location.pathname;
+  if (!path.endsWith("/success.html") && path !== "/success.html") {
+    return;
+  }
+
+  const sessionId = new URLSearchParams(window.location.search).get("session_id");
+  if (!sessionId) return;
+
+  clearCart();
+}
+
 async function init() {
+  clearCartOnSuccessPage();
   normalizeCartLinks();
   wireAddToCart();
   wireCartPage();

@@ -62,12 +62,16 @@
 					<section class="cart-list" aria-label="Cart items">
 						<div data-cart-items></div>
 						<p class="empty-state" data-cart-empty hidden>
-							Your cart is empty. Browse products to add your first item.
+							Your cart is empty. <a href="products.html">Browse products</a> to add your first item.
 						</p>
 					</section>
 
 					<aside class="cart-summary" aria-label="Order summary">
 						<h2 class="section__title">Summary</h2>
+						<div class="cart-summary__row">
+							<span>Items</span>
+							<strong data-cart-item-count>0</strong>
+						</div>
 						<div class="cart-summary__row">
 							<span>Subtotal</span>
 							<strong data-cart-subtotal>$0.00</strong>
@@ -87,7 +91,7 @@
 						>
 							Clear cart
 						</button>
-						<p class="small muted page-message" data-cart-error hidden></p>
+						<p class="small muted page-message" data-cart-error role="status" aria-live="polite" hidden></p>
 					</aside>
 				</div>
 			</section>

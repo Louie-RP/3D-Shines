@@ -1,9 +1,14 @@
 name = "3d-shines-storefront-api"
 main = "src/worker.js"
 compatibility_date = "2026-05-19"
+# Optional but recommended once connected to your Cloudflare account.
+# account_id = "<your-cloudflare-account-id>"
 
 [vars]
+# Use your GitHub Pages origin (origin only, no path), for example:
+# https://louie-rp.github.io
 FRONTEND_ORIGIN = "https://<your-github-username>.github.io"
+# Comma-separated list for local development origins.
 CORS_ALLOWED_ORIGINS = "http://localhost:3000,http://localhost:5173"
 
 [[d1_databases]]

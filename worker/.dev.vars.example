@@ -1,0 +1,5 @@
+# Copy this file to worker/.dev.vars for local development only.
+# Do NOT commit worker/.dev.vars.
+
+STRIPE_SECRET_KEY=sk_test_replace_me
+STRIPE_WEBHOOK_SECRET=whsec_replace_me

@@ -752,6 +752,10 @@ a:hover {
   color: var(--muted);
 }
 
+.empty-state a {
+  color: var(--text);
+}
+
 .cart-layout {
   display: grid;
   grid-template-columns: 1.25fr 0.75fr;
@@ -843,6 +847,10 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.cart-summary__row strong {
+  font-size: 18px;
 }
 
 .page-message {
