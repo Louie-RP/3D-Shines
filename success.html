@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="color-scheme" content="dark" />
+		<title>Order Confirmed - 3D Shines</title>
+		<meta
+			name="description"
+			content="Your 3D Shines checkout is complete. Thank you for your order."
+		/>
+
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=Space+Grotesk:wght@300..700&display=swap"
+			rel="stylesheet"
+		/>
+
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+
+	<body>
+		<a class="skip-link" href="#main">Skip to content</a>
+
+		<header class="header" data-header>
+			<div class="container header__inner">
+				<a class="brand" href="index.html" aria-label="3D Shines home">
+					<span class="brand__mark" aria-hidden="true"></span>
+					<span class="brand__name">3D Shines</span>
+				</a>
+
+				<div class="header__actions">
+					<nav class="nav nav--header" aria-label="Header">
+						<a href="index.html">Home</a>
+						<a href="products.html">Products</a>
+						<a href="cart.html">Cart</a>
+					</nav>
+
+					<a class="nav__cart" href="cart.html" aria-label="Cart">
+						Cart <span class="nav__count" data-cart-count>0</span>
+					</a>
+				</div>
+			</div>
+		</header>
+
+		<main id="main">
+			<section class="section status-page">
+				<div class="container status-page__card">
+					<p class="eyebrow">Success</p>
+					<h1 class="hero__title">Payment complete</h1>
+					<p class="hero__sub">
+						Thanks for your order. You will receive a confirmation from Stripe.
+					</p>
+					<div class="hero__actions">
+						<a class="button" href="products.html">Continue shopping</a>
+						<a class="button button--ghost" href="index.html">Back to home</a>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<script src="script.js"></script>
+	</body>
+</html>

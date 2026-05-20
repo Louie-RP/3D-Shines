@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="color-scheme" content="dark" />
+		<title>Cart - 3D Shines</title>
+		<meta
+			name="description"
+			content="Review your 3D Shines cart, update quantities, and proceed to secure checkout."
+		/>
+
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=Space+Grotesk:wght@300..700&display=swap"
+			rel="stylesheet"
+		/>
+
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+
+	<body>
+		<a class="skip-link" href="#main">Skip to content</a>
+
+		<header class="header" data-header>
+			<div class="container header__inner">
+				<a class="brand" href="index.html" aria-label="3D Shines home">
+					<span class="brand__mark" aria-hidden="true"></span>
+					<span class="brand__name">3D Shines</span>
+				</a>
+
+				<div class="header__actions">
+					<nav class="nav nav--header" aria-label="Header">
+						<a href="index.html">Home</a>
+						<a href="products.html">Products</a>
+						<a href="cart.html" aria-current="page">Cart</a>
+					</nav>
+
+					<a class="nav__cart" href="cart.html" aria-label="Cart">
+						Cart <span class="nav__count" data-cart-count>0</span>
+					</a>
+				</div>
+			</div>
+		</header>
+
+		<main id="main" data-cart-page>
+			<section class="hero hero--page">
+				<div class="container hero__inner">
+					<div class="hero__copy">
+						<p class="eyebrow">Cart</p>
+						<h1 class="hero__title">Your selected items</h1>
+						<p class="hero__sub">
+							Update quantities, remove items, or clear your cart before checkout.
+						</p>
+					</div>
+				</div>
+			</section>
+
+			<section class="section">
+				<div class="container cart-layout">
+					<section class="cart-list" aria-label="Cart items">
+						<div data-cart-items></div>
+						<p class="empty-state" data-cart-empty hidden>
+							Your cart is empty. Browse products to add your first item.
+						</p>
+					</section>
+
+					<aside class="cart-summary" aria-label="Order summary">
+						<h2 class="section__title">Summary</h2>
+						<div class="cart-summary__row">
+							<span>Subtotal</span>
+							<strong data-cart-subtotal>$0.00</strong>
+						</div>
+						<div class="cart-summary__row">
+							<span>Total</span>
+							<strong data-cart-total>$0.00</strong>
+						</div>
+						<p class="small muted">Shipping and tax are calculated at checkout.</p>
+						<button class="button button--block" type="button" data-cart-checkout>
+							Checkout
+						</button>
+						<button
+							class="button button--ghost button--block"
+							type="button"
+							data-cart-clear
+						>
+							Clear cart
+						</button>
+						<p class="small muted page-message" data-cart-error hidden></p>
+					</aside>
+				</div>
+			</section>
+
+			<footer class="footer" id="subscribe">
+				<div class="container footer__inner">
+					<nav class="footer__links" aria-label="Footer">
+						<a href="products.html">Products</a>
+						<a href="about.html">About</a>
+						<a href="faq.html">FAQ</a>
+						<a href="privacy.html">Privacy</a>
+						<a href="contact.html">Contact</a>
+					</nav>
+
+					<div class="footer__right">
+						<p class="muted small footer__copy">© <span data-year></span> 3D Shines</p>
+					</div>
+				</div>
+			</footer>
+		</main>
+
+		<script src="script.js"></script>
+	</body>
+</html>

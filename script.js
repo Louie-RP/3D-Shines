@@ -1,239 +1,426 @@
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
 
+const CART_KEY = "cart";
+const MAX_ITEMS_PER_CHECKOUT = 20;
+const MAX_QTY_PER_ITEM = 10;
+
 const state = {
-  cartCount: 0,
+  productsByPriceId: new Map(),
 };
 
-const products = [
-  {
-    id: "aurora-keychain",
-    name: "Aurora Keychain",
-    price: 12,
-    tag: "Best seller",
-    desc: "Lightweight and durable — a shiny everyday carry for keys and bags.",
-  },
-  {
-    id: "desk-daisy",
-    name: "Desk Daisy",
-    price: 10,
-    tag: "New",
-    desc: "A tiny shelf buddy with petal details that catch the light.",
-  },
-  {
-    id: "clicker-cube",
-    name: "Clicker Cube",
-    price: 15,
-    tag: "Most loved",
-    desc: "Satisfying tactile clicks in a clean, minimal form.",
-  },
-  {
-    id: "mini-vase",
-    name: "Mini Vase",
-    price: 14,
-    tag: "Limited",
-    desc: "A small decorative vase for dried stems and desk decor.",
-  },
-  {
-    id: "cable-charm",
-    name: "Cable Charm",
-    price: 8,
-    tag: "Giftable",
-    desc: "Clip it on chargers and cables to keep your setup tidy.",
-  },
-  {
-    id: "phone-stand",
-    name: "Phone Stand",
-    price: 16,
-    tag: "Classic",
-    desc: "Stable angles for calls, videos, and bedside charging.",
-  },
-  {
-    id: "sparkle-tray",
-    name: "Sparkle Tray",
-    price: 18,
-    tag: "New",
-    desc: "Catch-all tray for rings, dice, earbuds, and tiny treasures.",
-  },
-  {
-    id: "bookmark-wave",
-    name: "Wave Bookmark",
-    price: 9,
-    tag: "New",
-    desc: "A flexible, smooth bookmark with an elegant ripple profile.",
-  },
-  {
-    id: "plant-labels",
-    name: "Plant Labels (Set)",
-    price: 11,
-    tag: "Practical",
-    desc: "Minimal labels for herbs, seedlings, and indoor plants.",
-  },
-  {
-    id: "desk-hook",
-    name: "Under-Desk Hook",
-    price: 13,
-    tag: "Practical",
-    desc: "Hang headphones or bags with a simple adhesive mount.",
-  },
-  {
-    id: "coin-case",
-    name: "Pocket Coin Case",
-    price: 12,
-    tag: "Limited",
-    desc: "A satisfying snap-fit case for coins and tiny keepsakes.",
-  },
-  {
-    id: "pen-caddy",
-    name: "Pen Caddy",
-    price: 17,
-    tag: "Most loved",
-    desc: "Clean organizer for pens, tools, and small accessories.",
-  },
-];
-
-function currency(value) {
-  return `$${value.toFixed(2)}`;
+function getApiBase() {
+  const override = window.STOREFRONT_API_BASE;
+  if (typeof override === "string" && override.trim()) {
+    return override.replace(/\/+$/, "");
+  }
+  return "";
 }
 
-function createProductCard(product, { compact = false } = {}) {
-  const card = document.createElement("button");
-  card.type = "button";
+function endpoint(path) {
+  return `${getApiBase()}${path}`;
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function formatCurrency(amountMinor, currency = "usd") {
+  const amount = Number(amountMinor || 0) / 100;
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: String(currency || "usd").toUpperCase(),
+  }).format(amount);
+}
+
+function getCart() {
+  try {
+    const raw = localStorage.getItem(CART_KEY);
+    if (!raw) return { items: [] };
+    const parsed = JSON.parse(raw);
+    if (!parsed || !Array.isArray(parsed.items)) return { items: [] };
+
+    const items = parsed.items
+      .map((item) => ({
+        priceId: String(item.priceId || ""),
+        productId: String(item.productId || ""),
+        name: String(item.name || ""),
+        image: item.image ? String(item.image) : "",
+        unitAmount: Number(item.unitAmount || 0),
+        currency: String(item.currency || "usd"),
+        quantity: Number(item.quantity || 0),
+      }))
+      .filter((item) => item.priceId && item.name && item.quantity > 0)
+      .map((item) => ({
+        ...item,
+        quantity: Math.min(MAX_QTY_PER_ITEM, Math.max(1, Math.trunc(item.quantity))),
+      }));
+
+    return { items };
+  } catch {
+    return { items: [] };
+  }
+}
+
+function saveCart(cart) {
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+}
+
+function getCartCount(cart = getCart()) {
+  return cart.items.reduce((sum, item) => sum + item.quantity, 0);
+}
+
+function renderCartCount() {
+  const count = getCartCount();
+  $$("[data-cart-count]").forEach((el) => {
+    el.textContent = String(count);
+  });
+}
+
+function addToCart(product) {
+  const cart = getCart();
+  const idx = cart.items.findIndex((item) => item.priceId === product.priceId);
+
+  if (idx >= 0) {
+    cart.items[idx].quantity = Math.min(
+      MAX_QTY_PER_ITEM,
+      cart.items[idx].quantity + 1
+    );
+  } else {
+    if (cart.items.length >= MAX_ITEMS_PER_CHECKOUT) return;
+    cart.items.push({
+      priceId: product.priceId,
+      productId: product.productId,
+      name: product.name,
+      image: product.image || "",
+      unitAmount: product.unitAmount,
+      currency: product.currency,
+      quantity: 1,
+    });
+  }
+
+  saveCart(cart);
+  renderCartCount();
+}
+
+function removeFromCart(priceId) {
+  const cart = getCart();
+  cart.items = cart.items.filter((item) => item.priceId !== priceId);
+  saveCart(cart);
+  renderCartCount();
+}
+
+function updateQuantity(priceId, qty) {
+  const cart = getCart();
+  const item = cart.items.find((entry) => entry.priceId === priceId);
+  if (!item) return;
+
+  const quantity = Math.trunc(Number(qty));
+  if (!Number.isFinite(quantity) || quantity <= 0) {
+    removeFromCart(priceId);
+    return;
+  }
+
+  item.quantity = Math.min(MAX_QTY_PER_ITEM, Math.max(1, quantity));
+  saveCart(cart);
+  renderCartCount();
+}
+
+function clearCart() {
+  saveCart({ items: [] });
+  renderCartCount();
+}
+
+function createProductCard(product) {
+  const card = document.createElement("article");
   card.className = "card";
-  card.setAttribute("aria-label", `Open ${product.name}`);
-  card.dataset.productId = product.id;
 
-  const thumb = document.createElement("div");
-  thumb.className = "thumb";
-  const monogram = document.createElement("div");
-  monogram.className = "thumb__monogram";
-  monogram.textContent = product.name.trim().slice(0, 1).toUpperCase();
-  thumb.appendChild(monogram);
+  const imageHtml = product.image
+    ? `<img class="thumb__image" src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" loading="lazy" />`
+    : `<div class="thumb__monogram">${escapeHtml(product.name.trim().slice(0, 1).toUpperCase())}</div>`;
 
-  const body = document.createElement("div");
-  body.className = "card__body";
-
-  const tag = document.createElement("div");
-  tag.className = "tag";
-  tag.textContent = product.tag;
-
-  const title = document.createElement("h3");
-  title.className = "card__title";
-  title.textContent = product.name;
-
-  const price = document.createElement("div");
-  price.className = "price";
-  price.textContent = compact ? `From ${currency(product.price)}` : currency(product.price);
-
-  const actions = document.createElement("div");
-  actions.className = "card__actions";
-
-  const quick = document.createElement("span");
-  quick.className = "button button--small button--ghost";
-  quick.textContent = "Quick view";
-  quick.setAttribute("aria-hidden", "true");
-
-  const add = document.createElement("span");
-  add.className = "button button--small";
-  add.textContent = "Add";
-  add.setAttribute("aria-hidden", "true");
-
-  actions.appendChild(quick);
-  actions.appendChild(add);
-
-  body.appendChild(tag);
-  body.appendChild(title);
-  body.appendChild(price);
-  body.appendChild(actions);
-
-  card.appendChild(thumb);
-  card.appendChild(body);
+  card.innerHTML = `
+    <div class="thumb">${imageHtml}</div>
+    <div class="card__body">
+      <div class="tag">Available</div>
+      <h3 class="card__title">${escapeHtml(product.name)}</h3>
+      <p class="muted small">${escapeHtml(product.description || "")}</p>
+      <div class="price">${formatCurrency(product.unitAmount, product.currency)}</div>
+      <div class="card__actions">
+        <button class="button button--small" type="button" data-add-to-cart data-price-id="${escapeHtml(product.priceId)}">Add to cart</button>
+      </div>
+    </div>
+  `;
 
   return card;
 }
 
-function renderProducts() {
+function renderProductError(message) {
+  const lovedGrid = $("[data-product-grid]");
+  const allGrid = $("[data-product-grid-all]");
+  const error = `<p class="empty-state">${escapeHtml(message)}</p>`;
+
+  if (lovedGrid) lovedGrid.innerHTML = error;
+  if (allGrid) allGrid.innerHTML = error;
+}
+
+function renderProducts(products) {
   const lovedGrid = $("[data-product-grid]");
   const allGrid = $("[data-product-grid-all]");
 
+  if (!products.length) {
+    renderProductError("No products are available right now. Please check back soon.");
+    return;
+  }
+
   if (lovedGrid) {
     const mostLoved = products.slice(0, 6);
-    lovedGrid.replaceChildren(
-      ...mostLoved.map((p) => createProductCard(p, { compact: true }))
-    );
+    lovedGrid.replaceChildren(...mostLoved.map((product) => createProductCard(product)));
   }
 
   if (allGrid) {
-    allGrid.replaceChildren(
-      ...products.map((p) => createProductCard(p, { compact: true }))
-    );
+    allGrid.replaceChildren(...products.map((product) => createProductCard(product)));
   }
 }
 
-function setCartCount(nextCount) {
-  state.cartCount = nextCount;
-  const el = $("[data-cart-count]");
-  if (el) el.textContent = String(state.cartCount);
+async function fetchProducts() {
+  const response = await fetch(endpoint("/products"), {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Unable to load products");
+  }
+
+  const payload = await response.json();
+  if (!payload || !Array.isArray(payload.products)) {
+    throw new Error("Invalid product response");
+  }
+
+  return payload.products;
 }
 
-function openModal(product) {
-  const dialog = $("[data-modal]");
-  if (!dialog) return;
+async function initProducts() {
+  const hasGrid = Boolean($("[data-product-grid]")) || Boolean($("[data-product-grid-all]"));
+  if (!hasGrid) return;
 
-  $("[data-modal-tag]", dialog).textContent = product.tag;
-  $("[data-modal-title]", dialog).textContent = product.name;
-  $("[data-modal-price]", dialog).textContent = currency(product.price);
-  $("[data-modal-desc]", dialog).textContent = product.desc;
-
-  const thumb = $("[data-modal-thumb]", dialog);
-  if (thumb) {
-    thumb.innerHTML = "";
-    const mono = document.createElement("div");
-    mono.className = "thumb__monogram";
-    mono.textContent = product.name.trim().slice(0, 1).toUpperCase();
-    thumb.appendChild(mono);
+  try {
+    const products = await fetchProducts();
+    state.productsByPriceId.clear();
+    products.forEach((product) => {
+      state.productsByPriceId.set(product.priceId, product);
+    });
+    renderProducts(products);
+  } catch {
+    renderProductError("Catalog is temporarily unavailable. Please try again.");
   }
-
-  const add = $("[data-add-to-cart]", dialog);
-  if (add) {
-    add.onclick = () => {
-      setCartCount(state.cartCount + 1);
-      dialog.close();
-    };
-  }
-
-  const copyLink = $("[data-copy-link]", dialog);
-  if (copyLink) {
-    copyLink.onclick = async () => {
-      const url = new URL(window.location.href);
-      url.hash = product.id;
-      try {
-        await navigator.clipboard.writeText(url.toString());
-        copyLink.textContent = "Copied";
-        setTimeout(() => (copyLink.textContent = "Copy link"), 900);
-      } catch {
-        copyLink.textContent = "Copy failed";
-        setTimeout(() => (copyLink.textContent = "Copy link"), 900);
-      }
-    };
-  }
-
-  dialog.showModal();
 }
 
-function wireProductGrid() {
-  document.addEventListener("click", (e) => {
-    const target = e.target;
+function renderCartItems(items) {
+  const host = $("[data-cart-items]");
+  if (!host) return;
+
+  host.replaceChildren(
+    ...items.map((item) => {
+      const row = document.createElement("article");
+      row.className = "cart-item";
+
+      const imageHtml = item.image
+        ? `<img class="cart-item__img" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" loading="lazy" />`
+        : `<div class="cart-item__img cart-item__img--fallback">${escapeHtml(
+            item.name.trim().slice(0, 1).toUpperCase()
+          )}</div>`;
+
+      const lineTotal = item.unitAmount * item.quantity;
+
+      row.innerHTML = `
+        <div class="cart-item__media">${imageHtml}</div>
+        <div class="cart-item__info">
+          <h3 class="cart-item__name">${escapeHtml(item.name)}</h3>
+          <p class="cart-item__meta">${formatCurrency(item.unitAmount, item.currency)} each</p>
+        </div>
+        <div class="cart-item__controls">
+          <label>
+            <span class="sr-only">Quantity</span>
+            <input
+              class="qty-input"
+              type="number"
+              min="1"
+              max="10"
+              value="${item.quantity}"
+              data-qty-input
+              data-price-id="${escapeHtml(item.priceId)}"
+            />
+          </label>
+          <p class="cart-item__line-total">${formatCurrency(lineTotal, item.currency)}</p>
+          <button class="button button--small button--ghost" type="button" data-remove-item data-price-id="${escapeHtml(item.priceId)}">Remove</button>
+        </div>
+      `;
+
+      return row;
+    })
+  );
+}
+
+function renderCartSummary(cart) {
+  const subtotalValue = cart.items.reduce(
+    (sum, item) => sum + item.unitAmount * item.quantity,
+    0
+  );
+  const currency = cart.items[0]?.currency || "usd";
+  const subtotal = formatCurrency(subtotalValue, currency);
+
+  const subtotalEl = $("[data-cart-subtotal]");
+  const totalEl = $("[data-cart-total]");
+  if (subtotalEl) subtotalEl.textContent = subtotal;
+  if (totalEl) totalEl.textContent = subtotal;
+
+  const isEmpty = cart.items.length === 0;
+  const emptyEl = $("[data-cart-empty]");
+  const checkoutBtn = $("[data-cart-checkout]");
+  const clearBtn = $("[data-cart-clear]");
+
+  if (emptyEl) emptyEl.hidden = !isEmpty;
+  if (checkoutBtn) checkoutBtn.disabled = isEmpty;
+  if (clearBtn) clearBtn.disabled = isEmpty;
+}
+
+function renderCartPage() {
+  if (!$("[data-cart-page]")) return;
+
+  const cart = getCart();
+  renderCartItems(cart.items);
+  renderCartSummary(cart);
+}
+
+async function beginCheckout() {
+  const errorEl = $("[data-cart-error]");
+  const checkoutBtn = $("[data-cart-checkout]");
+  const cart = getCart();
+
+  if (errorEl) {
+    errorEl.hidden = true;
+    errorEl.textContent = "";
+  }
+
+  if (!cart.items.length) {
+    if (errorEl) {
+      errorEl.hidden = false;
+      errorEl.textContent = "Your cart is empty.";
+    }
+    return;
+  }
+
+  if (checkoutBtn) {
+    checkoutBtn.disabled = true;
+    checkoutBtn.textContent = "Redirecting...";
+  }
+
+  try {
+    const response = await fetch(endpoint("/create-checkout-session"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        items: cart.items.map((item) => ({
+          priceId: item.priceId,
+          quantity: item.quantity,
+        })),
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Checkout initialization failed");
+    }
+
+    const payload = await response.json();
+    if (!payload || typeof payload.url !== "string") {
+      throw new Error("Invalid checkout session response");
+    }
+
+    window.location.href = payload.url;
+  } catch {
+    if (errorEl) {
+      errorEl.hidden = false;
+      errorEl.textContent = "Unable to start checkout. Please try again.";
+    }
+
+    if (checkoutBtn) {
+      checkoutBtn.disabled = false;
+      checkoutBtn.textContent = "Checkout";
+    }
+  }
+}
+
+function wireCartPage() {
+  const cartRoot = $("[data-cart-page]");
+  if (!cartRoot) return;
+
+  cartRoot.addEventListener("click", (event) => {
+    const target = event.target;
     if (!(target instanceof HTMLElement)) return;
 
-    const card = target.closest(".card");
-    if (!(card instanceof HTMLElement)) return;
+    const removeButton = target.closest("[data-remove-item]");
+    if (removeButton instanceof HTMLElement) {
+      const priceId = removeButton.dataset.priceId;
+      if (!priceId) return;
+      removeFromCart(priceId);
+      renderCartPage();
+      return;
+    }
 
-    const id = card.dataset.productId;
-    const product = products.find((p) => p.id === id);
+    if (target.matches("[data-cart-clear]")) {
+      clearCart();
+      renderCartPage();
+      return;
+    }
+
+    if (target.matches("[data-cart-checkout]")) {
+      beginCheckout();
+    }
+  });
+
+  cartRoot.addEventListener("change", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLInputElement)) return;
+    if (!target.matches("[data-qty-input]")) return;
+
+    const priceId = target.dataset.priceId;
+    if (!priceId) return;
+
+    updateQuantity(priceId, target.value);
+    renderCartPage();
+  });
+}
+
+function wireAddToCart() {
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+
+    const button = target.closest("[data-add-to-cart]");
+    if (!(button instanceof HTMLButtonElement)) return;
+
+    const priceId = button.dataset.priceId;
+    if (!priceId) return;
+
+    const product = state.productsByPriceId.get(priceId);
     if (!product) return;
 
-    openModal(product);
+    addToCart(product);
+    button.textContent = "Added";
+    window.setTimeout(() => {
+      button.textContent = "Add to cart";
+    }, 700);
   });
 }
 
@@ -261,20 +448,20 @@ function wireMenu() {
 
   closeButton.addEventListener("click", close);
 
-  $$("[data-mobile-link]", mobile).forEach((a) =>
-    a.addEventListener("click", close)
+  $$("[data-mobile-link]", mobile).forEach((anchor) =>
+    anchor.addEventListener("click", close)
   );
 
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") close();
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") close();
   });
 }
 
 function wireForms() {
   const contact = $("[data-contact-form]");
   if (contact) {
-    contact.addEventListener("submit", (e) => {
-      e.preventDefault();
+    contact.addEventListener("submit", (event) => {
+      event.preventDefault();
       const hint = $("[data-form-hint]");
       if (hint) hint.hidden = false;
       contact.reset();
@@ -283,8 +470,8 @@ function wireForms() {
 
   const subscribe = $("[data-subscribe-form]");
   if (subscribe) {
-    subscribe.addEventListener("submit", (e) => {
-      e.preventDefault();
+    subscribe.addEventListener("submit", (event) => {
+      event.preventDefault();
       subscribe.reset();
     });
   }
@@ -295,18 +482,25 @@ function initYear() {
   if (el) el.textContent = String(new Date().getFullYear());
 }
 
-function openFromHash() {
-  const id = window.location.hash.replace("#", "").trim();
-  if (!id) return;
-
-  const product = products.find((p) => p.id === id);
-  if (product) openModal(product);
+function normalizeCartLinks() {
+  $$(".nav__cart").forEach((anchor) => {
+    if (anchor instanceof HTMLAnchorElement) {
+      anchor.href = "cart.html";
+    }
+  });
 }
 
-renderProducts();
-wireProductGrid();
-wireMenu();
-wireForms();
-initYear();
-setCartCount(0);
-openFromHash();
+async function init() {
+  normalizeCartLinks();
+  wireAddToCart();
+  wireCartPage();
+  wireMenu();
+  wireForms();
+  initYear();
+
+  renderCartCount();
+  renderCartPage();
+  await initProducts();
+}
+
+init();
